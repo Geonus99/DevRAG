@@ -1,16 +1,20 @@
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
-import os
+from pathlib import Path
 
-load_dotenv()
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+load_dotenv(BACKEND_DIR / '.env')
 
 def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    from api.sources import sources_bp
+    from app.api.sources import sources_bp
+    from app.api.chat import chat_bp
+
     app.register_blueprint(sources_bp, url_prefix='/api')
+    app.register_blueprint(chat_bp, url_prefix='/api')
 
     @app.route('/health')
     def health():
